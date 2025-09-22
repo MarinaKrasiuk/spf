@@ -1,0 +1,18 @@
+spring.config.activate.on-profile: prod
+taskapp:
+  environment: production
+  admin-email: admin@prod.com
+  default-priority: HIGH
+  notifications-enabled: false
+  max-title-length: 200
+  sample-tasks:
+    - title: "Prod Task 1"
+      assignee-email: "prod1@test.com"
+      description: "First Prod task"
+      status: "TODO"
+      priority: "MEDIUM"
+    - title: "Prod Task 2"
+      assignee-email: "prod2@test.com"
+      description: "Second Prod task"
+      status: "IN_PROGRESS"
+      priority: "HIGH"

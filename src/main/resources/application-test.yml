@@ -1,0 +1,18 @@
+spring.config.activate.on-profile: test
+taskapp:
+  environment: test
+  admin-email: admin@test.com
+  default-priority: MEDIUM
+  notifications-enabled: false
+  max-title-length: 150
+  sample-tasks:
+    - title: "Prod Test 1"
+      assignee-email: "test1@test.com"
+      description: "First Test task"
+      status: "TODO"
+      priority: "MEDIUM"
+    - title: "Prod Test 2"
+      assignee-email: "test2@test.com"
+      description: "Second Test task"
+      status: "IN_PROGRESS"
+      priority: "HIGH"

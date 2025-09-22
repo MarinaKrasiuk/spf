@@ -1,0 +1,18 @@
+spring.config.activate.on-profile: dev
+taskapp:
+  environment: development
+  admin-email: admin@dev.com
+  default-priority: MEDIUM
+  notifications-enabled: true
+  max-title-length: 100
+  sample-tasks:
+    - title: "Demo Task 1"
+      assignee-email: "demo1@test.com"
+      description: "First demo task"
+      status: "TODO"
+      priority: "MEDIUM"
+    - title: "Demo Task 2"
+      assignee-email: "demo2@test.com"
+      description: "Second demo task"
+      status: "IN_PROGRESS"
+      priority: "HIGH"
