@@ -1,18 +1,25 @@
-spring.config.activate.on-profile: dev
-taskapp:
-  environment: development
-  admin-email: admin@dev.com
-  default-priority: MEDIUM
-  notifications-enabled: true
-  max-title-length: 100
+spf.task:
+  environment: development  # Indicates this is the production environment
+  admin-email: admin@dev.com # Admin contact (use env variable in real prod)
+  default-priority: MEDIUM # Default priority for new tasks
+  notifications-enabled: true # Disabled notifications (verify if intentional)
+  max-title-length: 100 # Maximum allowed length for task titles
+  # Sample tasks for demonstration;
+  sample-data-enabled: true  # Add this flag to guard loading sample tasks
   sample-tasks:
     - title: "Demo Task 1"
       assignee-email: "demo1@test.com"
       description: "First demo task"
       status: "TODO"
       priority: "MEDIUM"
+      createdAt: "2025-09-01T10:00:00"
+      updatedAt: "2025-09-30T10:00:00"
     - title: "Demo Task 2"
       assignee-email: "demo2@test.com"
       description: "Second demo task"
       status: "IN_PROGRESS"
       priority: "HIGH"
+      createdAt: "2025-09-01T10:00:00"
+      updatedAt: "2025-09-30T10:00:00"
+  app:
+  - isNotificationsEnabled: true

@@ -11,24 +11,29 @@ import org.springframework.stereotype.Component;
 public class SampleDataLoader {
 
     private final TaskRepository taskRepository;
-    private final AppProperties appProperties;
+    private final TaskProperties taskProperties;
 
-    public SampleDataLoader(TaskRepository taskRepository, AppProperties appProperties) {
+
+    public SampleDataLoader(TaskRepository taskRepository, TaskProperties taskProperties) {
         this.taskRepository = taskRepository;
-        this.appProperties = appProperties;
+        this.taskProperties = taskProperties;
     }
 
     @PostConstruct
     public void init() {
-        for (AppProperties.SampleTask s : appProperties.getSampleTasks()) {
-            Task task = Task.builder()
-                    .title(s.getTitle())
-                    .assigneeEmail(s.getAssigneeEmail())
-                    .description(s.getDescription())
-                    .status(Status.valueOf(s.getStatus()))
-                    .priority(Priority.valueOf(s.getPriority()))
-                    .build();
-            taskRepository.save(task);
+        if (taskProperties.isSampleDataEnabled()) {
+            for (TaskProperties.SampleTask s : taskProperties.getSampleTasks()) {
+                Task task = Task.builder()
+                        .title(s.getTitle())
+                        .assigneeEmail(s.getAssigneeEmail())
+                        .description(s.getDescription())
+                        .status(Status.fromString(s.getStatus().getValue()))
+                        .priority(Priority.fromString(s.getPriority().getValue()))
+                        .createdAt(s.getCreatedAt())
+                        .updatedAt(s.getUpdatedAt())
+                        .build();
+                taskRepository.save(task);
+            }
         }
     }
 }

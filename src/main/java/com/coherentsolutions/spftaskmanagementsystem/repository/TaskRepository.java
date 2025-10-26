@@ -4,10 +4,7 @@ import com.coherentsolutions.spftaskmanagementsystem.models.Status;
 import com.coherentsolutions.spftaskmanagementsystem.models.Task;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,7 +14,13 @@ public class TaskRepository {
     private final AtomicLong counter = new AtomicLong(0);
 
     public Task save(Task task) {
+
         if (task.getId() == null) {
+            boolean titleExists = store.values().stream()
+                    .anyMatch(existing -> existing.getTitle().equalsIgnoreCase(task.getTitle()));
+            if (titleExists) {
+                throw new IllegalArgumentException("Task title must be unique.");
+            }
             task.setId(counter.incrementAndGet());
         }
         store.put(task.getId(), task);
@@ -28,20 +31,26 @@ public class TaskRepository {
         return Optional.ofNullable(store.get(id));
     }
 
-    public List<Task> findAll() {
-        return new ArrayList<>(store.values());
+    public List<Task> findAllSortedByCreatedAt() {
+        return store.values().stream()
+                .sorted(Comparator.comparing(Task::getCreatedAt))
+                .toList();
     }
 
-    public void delete(Long id) {
-        store.remove(id);
+    public boolean delete(Long id) {
+        return store.remove(id) != null;
     }
 
     public List<Task> findByAssigneeAndStatus(String email, Status status) {
         return store.values().stream()
-                .filter(t -> (email == null || t.getAssigneeEmail().equalsIgnoreCase(email)))
-                .filter(t -> (status == null || t.getStatus() == status))
+                .filter(t -> email == null ||
+                        (t.getAssigneeEmail() != null && t.getAssigneeEmail().equalsIgnoreCase(email)))
                 .toList();
     }
 
-
+    public Optional<Task> findByTitle(String title) {
+        return store.values().stream()
+                .filter(t -> t.getTitle().equalsIgnoreCase(title))
+                .findFirst();
+    }
 }
