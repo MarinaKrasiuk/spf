@@ -1,11 +1,8 @@
 package com.coherentsolutions.spftaskmanagementsystem.config;
 
-import com.coherentsolutions.spftaskmanagementsystem.models.Priority;
 import com.coherentsolutions.spftaskmanagementsystem.models.Status;
 import com.coherentsolutions.spftaskmanagementsystem.models.Task;
 import com.coherentsolutions.spftaskmanagementsystem.repository.TaskRepository;
-import com.coherentsolutions.spftaskmanagementsystem.service.AuditService;
-import com.coherentsolutions.spftaskmanagementsystem.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +18,6 @@ public class TaskService {
     private final AuditService audit;
 
     public Task create(Task task) {
-        if (repo.findAllSortedByCreatedAt().stream()
-                .anyMatch(t -> t.getTitle().equalsIgnoreCase(task.getTitle()))) {
-            throw new IllegalArgumentException("Task title must be unique");
-        }
         task.setCreatedAt(LocalDateTime.now());
         task.setUpdatedAt(LocalDateTime.now());
         Task saved = repo.save(task);
@@ -37,46 +30,28 @@ public class TaskService {
         return repo.findById(id);
     }
 
-    public List<Task> findAllSortedByCreatedAt() {
-        return repo.findAllSortedByCreatedAt();
+    public List<Task> findAll() {
+        return repo.findAll();
     }
 
     public Task update(Long id, Task updated) {
-        Task existing = repo.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("Task with id " + id + " not found"));
+        Task existing = repo.findById(id).orElseThrow();
 
-        if (!existing.getTitle().equalsIgnoreCase(updated.getTitle()) &&
-                repo.findAllSortedByCreatedAt().stream()
-                        .anyMatch(t -> t.getTitle().equalsIgnoreCase(updated.getTitle()))) {
-            throw new IllegalArgumentException("Task title must be unique");
+        if (existing.getStatus() == Status.DONE && updated.getStatus() == Status.TODO) {
+            throw new IllegalStateException("Cannot move task from DONE back to TODO");
         }
 
-        if (!isValidStatusTransition(existing.getStatus(), updated.getStatus())) {
-            throw new IllegalStateException("Invalid status transition: " +
-                    existing.getStatus() + " → " + updated.getStatus());
-        }
-
-        if ((updated.getPriority() == Priority.HIGH || updated.getPriority() == Priority.CRITICAL)
-                && (updated.getAssigneeEmail() == null || updated.getAssigneeEmail().isBlank())) {
-            throw new IllegalArgumentException("High or Critical priority tasks must have a valid assignee email");
-        }
-
-        existing.setTitle(updated.getTitle());
-        existing.setDescription(updated.getDescription());
-        existing.setStatus(updated.getStatus());
-        existing.setPriority(updated.getPriority());
-        existing.setAssigneeEmail(updated.getAssigneeEmail());
-        existing.setUpdatedAt(LocalDateTime.now());
-        Task saved = repo.save(existing);
-
+        updated.setId(id);
+        updated.setCreatedAt(existing.getCreatedAt());
+        updated.setUpdatedAt(LocalDateTime.now());
+        Task saved = repo.save(updated);
         notifier.notifyStatusChange(saved);
         audit.log("Updated task " + saved.getId());
-
         return saved;
     }
 
     public void delete(Long id) {
-        repo.findById(id).orElseThrow();
+        repo.findById(id).orElseThrow(); // ensure exists
         repo.delete(id);
         notifier.notifyDeletion(id);
         audit.log("Deleted task " + id);
@@ -84,11 +59,5 @@ public class TaskService {
 
     public List<Task> search(String email, Status status) {
         return repo.findByAssigneeAndStatus(email, status);
-    }
-
-    private boolean isValidStatusTransition(Status from, Status to) {
-        return (from == Status.TODO && to == Status.IN_PROGRESS)
-                || (from == Status.IN_PROGRESS && to == Status.DONE)
-                || (from == to); // Allow no-op transitions if required
     }
 }

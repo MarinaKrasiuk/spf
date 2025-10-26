@@ -1,26 +1,18 @@
-spf.task:
-  environment: test # Indicates this is the production environment
-  admin-email: admin@test.com # Admin contact (use env variable in real prod)
-  default-priority: MEDIUM  # Default priority for new tasks
-  notifications-enabled: false  # Disabled notifications (verify if intentional)
-  max-title-length: 150 # Maximum allowed length for task titles
-  # Sample tasks for demonstration;
-  sample-data-enabled: false # Add this flag to guard loading sample tasks
+spring.config.activate.on-profile: test
+taskapp:
+  environment: test
+  admin-email: admin@test.com
+  default-priority: MEDIUM
+  notifications-enabled: false
+  max-title-length: 150
   sample-tasks:
-    - title: "Test 1"
+    - title: "Prod Test 1"
       assignee-email: "test1@test.com"
       description: "First Test task"
       status: "TODO"
       priority: "MEDIUM"
-      createdAt: "2025-09-21T10:00:00"
-      updatedAt: "2025-09-30T10:00:00"
-    - title: "Test 2"
+    - title: "Prod Test 2"
       assignee-email: "test2@test.com"
       description: "Second Test task"
       status: "IN_PROGRESS"
       priority: "HIGH"
-      createdAt: "2025-04-01T10:00:00"
-      updatedAt: "2025-09-30T10:00:00"
-
-app:
-    - isNotificationsEnabled: true

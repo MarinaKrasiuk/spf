@@ -29,7 +29,7 @@ class SpfTaskManagementSystemApplicationTests {
         Task newTask = Task.builder()
                 .title("Integration Test Task")
                 .description("Created in integration test")
-                .status(Status.TODO)
+                .status( Status.TODO)
                 .priority(Priority.MEDIUM)
                 .assigneeEmail("tester@example.com")
                 .build();
