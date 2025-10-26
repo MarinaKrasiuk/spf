@@ -11,6 +11,7 @@
     <groupId>com.coherentsolutions</groupId>
     <artifactId>spf-task-management-system</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>spf-task-management-system</name>
     <description>spf-task-management-system</description>
     <url/>
@@ -20,6 +21,9 @@
     <developers>
         <developer/>
     </developers>
+    <modules>
+        <module>api-autotest</module>
+    </modules>
     <scm>
         <connection/>
         <developerConnection/>

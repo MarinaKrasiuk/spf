@@ -1,0 +1,19 @@
+
+[
+  {
+    "id": "1",
+    "title": "Prod Task 1",
+    "assigneeEmail": "prod1@test.com",
+    "description": "First Prod task",
+    "status": "TODO",
+    "priority": "MEDIUM"
+  },
+  {
+    "id": 2,
+    "title": "Prod Task 2",
+    "assigneeEmail": "prod2@test.com",
+    "description": "Second Prod task",
+    "status": "IN_PROGRESS",
+    "priority": "HIGH"
+  }
+]

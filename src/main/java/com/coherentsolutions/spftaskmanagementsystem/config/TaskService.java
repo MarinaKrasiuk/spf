@@ -51,8 +51,10 @@ public class TaskService {
     }
 
     public void delete(Long id) {
-        repo.findById(id).orElseThrow(); // ensure exists
-        repo.delete(id);
+        Task task = repo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
+
+        repo.delete(task);
         notifier.notifyDeletion(id);
         audit.log("Deleted task " + id);
     }
