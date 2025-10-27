@@ -1,0 +1,19 @@
+
+[
+  {
+    "id": "1",
+    "title": "Demo Task 1",
+    "assigneeEmail": "demo1@test.com",
+    "description": "First demo task",
+    "status": "TODO",
+    "priority": "MEDIUM"
+  },
+  {
+    "id": 2,
+    "title": "Demo Task 2",
+    "assigneeEmail": "demo2@test.com",
+    "description": "Second demo task",
+    "status": "IN_PROGRESS",
+    "priority": "HIGH"
+  }
+]

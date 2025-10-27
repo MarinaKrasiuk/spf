@@ -1,0 +1,38 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Клонируем репозиторий
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Устанавливаем Java
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # 3️⃣ Собираем проект (без тестов пока)
+      - name: Build with Maven (skip tests)
+        run: mvn clean package -DskipTests
+
+      # 4️⃣ Запускаем приложение (в фоне)
+      - name: Run backend
+        run: |
+          nohup java -jar target/*.jar &
+          sleep 10  # ждём пока сервер поднимется
+
+      # 5️⃣ Запускаем тесты
+      - name: Run tests
+        run: mvn test
