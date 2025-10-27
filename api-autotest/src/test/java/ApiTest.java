@@ -26,7 +26,7 @@ public class ApiTest {
         String base = System.getProperty("baseUrl", "http://localhost:8080");
         RestAssured.baseURI = base;
 
-        File file = Paths.get("src", "main", "resources", "prodtasks.json").toFile();
+        File file = Paths.get("src", "main", "resources", "devtasks.json").toFile();
         if (!file.exists()) {
             throw new IllegalStateException("❌ testtasks.json not found at: " + file.getAbsolutePath());
         }
