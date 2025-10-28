@@ -25,14 +25,15 @@ jobs:
 
       # 3️⃣ Собираем проект (без тестов пока)
       - name: Build with Maven (skip tests)
-        run: mvn clean package -DskipTests
+        run: mvn -pl backend clean package -DskipTests
 
       # 4️⃣ Запускаем приложение (в фоне)
       - name: Run backend
         run: |
-          nohup java -jar target/*.jar &
+          cd backend
+          nohup mvn spring-boot:run -Dspring-boot.run.profiles=dev &
           sleep 10  # ждём пока сервер поднимется
 
       # 5️⃣ Запускаем тесты
       - name: Run tests
-        run: mvn test
+        run: mvn -pl api-autotest test
