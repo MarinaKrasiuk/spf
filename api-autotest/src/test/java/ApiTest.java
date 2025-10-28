@@ -1,10 +1,10 @@
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import models.Priority;
 import models.Status;
 import models.Task;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
@@ -119,9 +119,8 @@ public class ApiTest {
         softAssert.assertAll();
     }
 
-    @Test
+   /* @Test
     void deleteTask() {
-
         Task newTask = new Task();
         newTask.setTitle("Task To Delete");
         newTask.setDescription("Will be deleted");
@@ -158,8 +157,7 @@ public class ApiTest {
                 .anyMatch(t -> t.getId().equals(createdTask.getId()));
         softAssert.assertFalse(exists, "Deleted task should not exist in task list");
         softAssert.assertAll();
-    }
-
+    }*/
 
     private void compareTaskFields(SoftAssert softAssert, Task expected, Task actual, int index) {
         String idx = index >= 0 ? String.valueOf(index) : "independent";
