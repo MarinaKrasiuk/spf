@@ -6,7 +6,16 @@ on:
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
-
+  inputs:
+    env:
+      description: 'Environment to use (dev/test/prod)'
+      required: true
+      default: 'dev'
+      type: choice
+      options:
+        - dev
+        - test
+        - prod
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,9 +41,9 @@ jobs:
       - name: Run backend
         run: |
           cd backend
-          nohup mvn spring-boot:run -Dspring-boot.run.profiles=dev &
+          nohup mvn spring-boot:run -Dspring-boot.run.profiles=${{ github.event.inputs.env || 'dev' }} &
           sleep 10  # ждём пока сервер поднимется
 
       # 5️⃣ Запускаем тесты
       - name: Run tests
-        run: mvn -pl api-autotest test
+        run: mvn -pl api-autotest test -Denv=${{ github.event.inputs.env || 'dev' }}
