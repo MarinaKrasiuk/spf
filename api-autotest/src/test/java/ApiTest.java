@@ -23,13 +23,15 @@ public class ApiTest {
 
     @BeforeClass
     static void setup() throws IOException {
+        String env = System.getProperty("env", "dev");
         String base = System.getProperty("baseUrl", "http://localhost:8080");
         RestAssured.baseURI = base;
 
-        File file = Paths.get("src", "main", "resources", "devtasks.json").toFile();
+        File file = Paths.get("src", "main", "resources", env + "tasks.json").toFile();
         if (!file.exists()) {
-            throw new IllegalStateException("❌ testtasks.json not found at: " + file.getAbsolutePath());
+            throw new IllegalStateException("❌ " + env + "tasks.json not found at: " + file.getAbsolutePath());
         }
+
 
         ObjectMapper mapper = new ObjectMapper();
         sampleTasks = mapper.readValue(file, new TypeReference<List<Task>>() {
