@@ -6,16 +6,16 @@ on:
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
-  inputs:
-    env:
-      description: 'Environment to use (dev/test/prod)'
-      required: true
-      default: 'dev'
-      type: choice
-      options:
-        - dev
-        - test
-        - prod
+    inputs:
+      env:
+        description: 'Environment to use (dev/test/prod)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
 jobs:
   build:
     runs-on: ubuntu-latest
