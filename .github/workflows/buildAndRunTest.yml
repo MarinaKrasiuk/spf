@@ -43,6 +43,12 @@ jobs:
       - name: Run tests
         run: mvn -pl api-autotest test -Denv=${{ github.event.inputs.env || 'dev' }}
 
+      - name: Check Allure results
+        working-directory: api-autotest
+        run: |
+          echo "=== Checking Allure Results Folder ==="
+          ls -R target/allure-results || echo "❌ No allure-results folder found"
+    
       - name: Generate Allure Report
         working-directory: api-autotest
         run: mvn allure:report
