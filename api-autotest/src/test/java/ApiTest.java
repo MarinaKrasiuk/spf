@@ -1,4 +1,5 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.qameta.allure.testng.AllureTestNg;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 
@@ -7,6 +8,7 @@ import models.Status;
 import models.Task;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
@@ -21,6 +23,7 @@ import java.util.stream.IntStream;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
+@Listeners({AllureTestNg.class})
 public class ApiTest {
     private static final Logger log = LogManager.getLogger(ApiTest.class);
     static List<Task> sampleTasks;
