@@ -21,11 +21,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Клонируем репозиторий
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Устанавливаем Java
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -33,17 +31,24 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 3️⃣ Собираем проект (без тестов пока)
       - name: Build with Maven (skip tests)
         run: mvn -pl backend clean package -DskipTests
 
-      # 4️⃣ Запускаем приложение (в фоне)
       - name: Run backend
         run: |
           cd backend
           nohup mvn spring-boot:run -Dspring-boot.run.profiles=${{ github.event.inputs.env || 'dev' }} &
           sleep 10  # ждём пока сервер поднимется
 
-      # 5️⃣ Запускаем тесты
       - name: Run tests
         run: mvn -pl api-autotest test -Denv=${{ github.event.inputs.env || 'dev' }}
+
+      - name: Generate Allure Report
+        working-directory: api-autotest
+        run: mvn allure:report
+
+      - name: Upload Allure report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: allure-report
+            path: api-autotest/target/site/allure-maven-plugin
