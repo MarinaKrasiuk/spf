@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
+
 import models.Priority;
 import models.Status;
 import models.Task;
@@ -13,17 +14,21 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.util.stream.IntStream;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class ApiTest {
+    private static final Logger log = LogManager.getLogger(ApiTest.class);
     static List<Task> sampleTasks;
 
     @BeforeClass
     static void setup() throws IOException {
         String env = System.getProperty("env", "dev");
+        log.info("Currently running env {}", env);
         String base = System.getProperty("baseUrl", "http://localhost:8080");
         RestAssured.baseURI = base;
 
@@ -31,7 +36,6 @@ public class ApiTest {
         if (!file.exists()) {
             throw new IllegalStateException("❌ " + env + "tasks.json not found at: " + file.getAbsolutePath());
         }
-
 
         ObjectMapper mapper = new ObjectMapper();
         sampleTasks = mapper.readValue(file, new TypeReference<List<Task>>() {
@@ -53,7 +57,7 @@ public class ApiTest {
 
         SoftAssert softAssert = new SoftAssert();
         softAssert.assertEquals(actualTasks.size(), sampleTasks.size(), "Task list size mismatch");
-
+        log.info("Get all tasks: {}", actualTasks.size());
         IntStream.range(0, Math.min(sampleTasks.size(), actualTasks.size()))
                 .forEach(i -> compareTaskFields(softAssert, sampleTasks.get(i), actualTasks.get(i), i));
 
@@ -68,7 +72,7 @@ public class ApiTest {
         newTask.setStatus(Status.TODO);
         newTask.setPriority(Priority.LOW);
         newTask.setAssigneeEmail("independent@test.com");
-
+        log.info("Created task is : {}", newTask.toString());
         Task createdTask = given()
                 .header("Content-Type", "application/json")
                 .body(newTask)
@@ -121,48 +125,10 @@ public class ApiTest {
         softAssert.assertAll();
     }
 
-   /* @Test
-    void deleteTask() {
-        Task newTask = new Task();
-        newTask.setTitle("Task To Delete");
-        newTask.setDescription("Will be deleted");
-        newTask.setStatus(Status.TODO);
-        newTask.setPriority(Priority.HIGH);
-        newTask.setAssigneeEmail("delete@test.com");
-
-        Task createdTask = given()
-                .header("Content-Type", "application/json")
-                .body(newTask)
-                .when().post("/tasks")
-                .then()
-                .statusCode(200)
-                .extract().as(Task.class);
-        sampleTasks.add(createdTask);
-
-        given()
-                .when().delete("/tasks/" + createdTask.getId())
-                .then()
-                .statusCode(200); // REST convention: 204 No Content for successful deletion
-
-        sampleTasks.removeIf(t -> t.getId().equals(createdTask.getId()));
-
-        List<Task> allTasks = given()
-                .when().get("/tasks")
-                .then()
-                .statusCode(200)
-                .extract()
-                .body()
-                .as(new TypeRef<List<Task>>() {});
-
-        SoftAssert softAssert = new SoftAssert();
-        boolean exists = allTasks.stream()
-                .anyMatch(t -> t.getId().equals(createdTask.getId()));
-        softAssert.assertFalse(exists, "Deleted task should not exist in task list");
-        softAssert.assertAll();
-    }*/
-
     private void compareTaskFields(SoftAssert softAssert, Task expected, Task actual, int index) {
         String idx = index >= 0 ? String.valueOf(index) : "independent";
+        log.info("Expected task : {}", expected.toString());
+        log.info("Actual task : {}", actual.toString());
         if (expected.getId() != null) {
             softAssert.assertEquals(actual.getId(), expected.getId(), "Task id mismatch at index " + idx);
         }
