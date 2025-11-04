@@ -16,6 +16,9 @@ on:
           - dev
           - test
           - prod
+  schedule:
+    - cron: '0 0 * * *' # every day at midnight UTC
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,17 +41,11 @@ jobs:
         run: |
           cd backend
           nohup mvn spring-boot:run -Dspring-boot.run.profiles=${{ github.event.inputs.env || 'dev' }} &
-          sleep 10  # ждём пока сервер поднимется
+          sleep 10 
 
       - name: Run tests
         run: mvn -pl api-autotest test -Denv=${{ github.event.inputs.env || 'dev' }}
 
-      - name: Check Allure results
-        working-directory: api-autotest
-        run: |
-          echo "=== Checking Allure Results Folder ==="
-          ls -R target/allure-results || echo "❌ No allure-results folder found"
-    
       - name: Generate Allure Report
         working-directory: api-autotest
         run: mvn allure:report
@@ -58,3 +55,10 @@ jobs:
         with:
             name: allure-report
             path: api-autotest/target/site/allure-maven-plugin
+
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+           github_token: ${{ secrets.GITHUB_TOKEN }}
+           publish_dir: api-autotest/target/site/allure-maven-plugin
+           destination_dir: allure
