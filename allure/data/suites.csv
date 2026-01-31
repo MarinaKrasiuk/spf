@@ -1,4 +1,4 @@
 "Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Fri Jan 30 01:04:37 UTC 2026","Fri Jan 30 01:04:37 UTC 2026","124","Surefire suite","Surefire test","ApiTest","ApiTest","getAllTasks","getAllTasks",""
-"passed","Fri Jan 30 01:04:36 UTC 2026","Fri Jan 30 01:04:37 UTC 2026","920","Surefire suite","Surefire test","ApiTest","ApiTest","createTask","createTask",""
-"passed","Fri Jan 30 01:04:37 UTC 2026","Fri Jan 30 01:04:37 UTC 2026","37","Surefire suite","Surefire test","ApiTest","ApiTest","updateTask","updateTask",""
+"passed","Sat Jan 31 01:02:16 UTC 2026","Sat Jan 31 01:02:16 UTC 2026","36","Surefire suite","Surefire test","ApiTest","ApiTest","updateTask","updateTask",""
+"passed","Sat Jan 31 01:02:16 UTC 2026","Sat Jan 31 01:02:16 UTC 2026","135","Surefire suite","Surefire test","ApiTest","ApiTest","getAllTasks","getAllTasks",""
+"passed","Sat Jan 31 01:02:15 UTC 2026","Sat Jan 31 01:02:16 UTC 2026","967","Surefire suite","Surefire test","ApiTest","ApiTest","createTask","createTask",""
